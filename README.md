@@ -1,6 +1,128 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Nexandria — Backend
+
+API REST construida con [NestJS](https://nestjs.com/) y [Prisma ORM](https://www.prisma.io/), con PostgreSQL como base de datos.
+
+---
+
+## Requisitos previos
+
+- [Docker](https://www.docker.com/) y Docker Compose
+- [Node.js 20+](https://nodejs.org/) (solo para desarrollo local sin Docker)
+
+---
+
+## Levantar el entorno completo con Docker
+
+Esta es la forma recomendada. Levanta la base de datos PostgreSQL y el backend NestJS con las migraciones de Prisma aplicadas automáticamente.
+
+```bash
+# Desde la carpeta backend/
+docker compose up --build
+```
+
+Esto:
+1. Construye la imagen del backend.
+2. Levanta PostgreSQL (espera a que esté listo gracias al healthcheck).
+3. Ejecuta `prisma migrate deploy` para aplicar las migraciones.
+4. Inicia el servidor en modo `start:dev` con hot-reload.
+
+El backend queda disponible en `http://localhost:3000`.
+
+Para detenerlo:
+
+```bash
+docker compose down
+```
+
+Para detenerlo y borrar los volúmenes (base de datos incluida):
+
+```bash
+docker compose down -v
+```
+
+---
+
+## Desarrollo local (sin Docker)
+
+### 1. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 2. Configurar variables de entorno
+
+Copiá el archivo `.env.example` (si existe) o creá un `.env` en la raíz de `backend/`:
+
+```env
+DATABASE_URL="postgresql://prisma:prisma123@localhost:5432/appdb?schema=public"
+```
+
+> Podés levantar solo la base de datos con Docker para desarrollo local:
+> ```bash
+> docker compose up postgres
+> ```
+
+### 3. Aplicar migraciones de Prisma
+
+```bash
+npx prisma migrate deploy
+```
+
+Para crear una nueva migración durante el desarrollo:
+
+```bash
+npx prisma migrate dev --name nombre-de-la-migracion
+```
+
+### 4. Generar el cliente de Prisma
+
+```bash
+npx prisma generate
+```
+
+### 5. Iniciar el servidor
+
+```bash
+# watch mode (desarrollo)
+npm run start:dev
+
+# producción
+npm run start:prod
+```
+
+---
+
+## Prisma Studio (explorador de base de datos)
+
+```bash
+npx prisma studio
+```
+
+Abre una interfaz web en `http://localhost:5555` para explorar y editar los datos.
+
+---
+
+## Tests
+
+```bash
+# unit tests
+npm run test
+
+# e2e tests
+npm run test:e2e
+
+# cobertura
+npm run test:cov
+```
+
+---
+
+## Variables de entorno
+
+| Variable       | Descripción                         | Ejemplo                                                       |
+|----------------|-------------------------------------|---------------------------------------------------------------|
+| `DATABASE_URL` | URL de conexión a PostgreSQL        | `postgresql://prisma:prisma123@localhost:5432/appdb?schema=public` |
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest

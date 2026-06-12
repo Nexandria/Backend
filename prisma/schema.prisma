@@ -1,47 +1,82 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  user
-  admin
-  libra
-}
-
-enum Gender {
-  m
-  f
-  o
-}
-
 model User {
-  id              Int     @id @default(autoincrement())
-  email           String  @unique
-  username        String  @unique
-  password        String
-  isEmailVerified Boolean @default(false)
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  emailVerified   Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  //escaneo dni
-  fullName        String?
-  dni             Int?    @unique
-  address         String?
-  birth           String?
-  gender          Gender?
+  // Account status. MVP: every user is created as "verified".
+  status          String   @default("verified")
 
-  role            Role @default(user)
+  // Role for access control. MVP: "USER" only ("ADMIN" reserved for the future).
+  role            String   @default("USER")
 
-  createdAt       DateTime @db.Timestamptz(3)
-  updatedAt       DateTime @db.Timestamptz(3)
+  // username plugin: `username` is the unique normalized handle,
+  // `displayUsername` preserves the original casing.
+  username        String?  @unique
+  displayUsername String?
 
-                 
+  sessions        Session[]
+  accounts        Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verification")
 }

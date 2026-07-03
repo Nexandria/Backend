@@ -10,6 +10,14 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ALUMN
+  ADMINSED
+  ADMINRED
+  BIBLIO
+}
+
 model User {
   id              String   @id @default(cuid())
   name            String
@@ -22,7 +30,7 @@ model User {
   status          String   @default("verified")
 
   // Role for access control. MVP: "USER" only ("ADMIN" reserved for the future).
-  role            String   @default("USER")
+  role            Role     @default(USER)
 
   // username plugin: `username` is the unique normalized handle,
   // `displayUsername` preserves the original casing.
@@ -68,6 +76,18 @@ model Account {
 
   @@index([userId])
   @@map("account")
+}
+
+model Library {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique
+  locationX Float
+  locationY Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("libraries")
 }
 
 model Verification {

@@ -1,10 +1,10 @@
 import { Controller, Post, Get, Param, Body } from '@nestjs/common';
-import { BranchService } from './branch.service';
-import { CreateBranchDto, UpdateBranchDto, ListBranchDto, SetLibrarianDto } from './dto/branch.dto';
+import { InventoryService } from './inventory.service';
+import { CreateBranchDto, UpdateBranchDto, ListBranchDto, SetLibrarianDto } from './dto/inventory.dto';
 
-@Controller('branch')
-export class BranchController {
-  constructor(private readonly branchService: BranchService) {}
+@Controller('inventory')
+export class InventoryController {
+  constructor(private readonly inventoryService: InventoryService) {}
 
   @Post('create')
   create(@Body() createBranchDto: CreateBranchDto) {

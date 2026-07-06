@@ -13,8 +13,8 @@ datasource db {
 enum Role {
   USER
   ALUMN
-  ADMINSED
-  ADMINRED
+  SEDMIN
+  REDMIN
   BIBLIO
 }
 
@@ -78,18 +78,6 @@ model Account {
   @@map("account")
 }
 
-model Library {
-  id        String   @id @default(cuid())
-  name      String
-  code      String   @unique
-  locationX Float
-  locationY Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("libraries")
-}
-
 model Verification {
   id         String    @id @default(cuid())
   identifier String
@@ -99,4 +87,54 @@ model Verification {
   updatedAt  DateTime? @updatedAt
 
   @@map("verification")
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique
+  locationX Float
+  locationY Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inventories Inventory[]
+
+  @@map("branches")
+}
+
+enum Item {
+  BOOK
+  ITEM
+}
+
+enum Status {
+  AVAILABLE
+  UNAWAILABLE
+  BORROWED
+}
+
+model Inventory {
+  id        String   @id @default(cuid())
+
+  type      Item     @default(ITEM)
+  fatherID  String?  
+  title     String
+  cover     String?
+
+  author    String?
+
+  barCode   String
+  isbn      String?
+
+  status    Status   @default(AVAILABLE)
+
+  branchId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  branch    Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@index([branchId])
+  @@map("inventories")
 }

@@ -22,7 +22,7 @@ export class BranchService {
   async update(updateBranchDto: UpdateBranchDto): Promise<{ message: string }> {
     const branch = await this.prisma.branch.findUnique({
       where: {
-        id: updateBranchDto.id,
+        id: updateBranchDto.branchId,
       }
     });
 
@@ -32,7 +32,7 @@ export class BranchService {
 
     await this.prisma.branch.update({
       where: {
-        id: updateBranchDto.id,
+        id: updateBranchDto.branchId,
       },
       data: {
         name: updateBranchDto.name,

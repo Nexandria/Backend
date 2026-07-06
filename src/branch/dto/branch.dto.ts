@@ -32,7 +32,7 @@ export class CreateBranchDto {
 export class UpdateBranchDto extends CreateBranchDto {
   @IsString()
   @IsNotEmpty()
-  id!: string;
+  branchId!: string;
 }
 
 export class ListBranchDto {

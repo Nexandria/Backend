@@ -116,6 +116,7 @@ enum Status {
 
 model Inventory {
   id        String   @id @default(cuid())
+  branchId  String
 
   type      Item     @default(ITEM)
   fatherID  String?  
@@ -129,7 +130,6 @@ model Inventory {
 
   status    Status   @default(AVAILABLE)
 
-  branchId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

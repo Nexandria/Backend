@@ -42,13 +42,19 @@ export class AddItemsDto {
 }
 
 export class RemoveItemDto {
-
+  @IsString()
+  @IsNotEmpty()
+  itemId!: string;
 }
 
 export class UpdateItemDto {
-
+    
 }
 
-export class SearchItemDto {
+export class ListItemDto {
+  @IsString()
+  itemId!: string;
 
+  @IsString()
+  branchId!: string;
 }
